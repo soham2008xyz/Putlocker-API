@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 from util.decorators import crossdomain
-from flask import Flask, url_for
+from flask import Flask
 import json
 import lxml
 import re
@@ -37,7 +37,7 @@ def get_shows():
 				show_data = {}
 				show_data['title'] = show.string
 				url_parts = show['href'].split('/')
-				show_data['url'] = url_for('get_show', show = url_parts[len(url_parts) - 2])
+				show_data['slug'] = url_parts[len(url_parts) - 2]
 				shows.append(show_data)
 			groups[title] = shows
 	return json.dumps(groups)
@@ -57,9 +57,8 @@ def get_show(show):
 				title_parts = episode['title'].split(' - ')
 				episode_data['title'] = episode.string + ((' - ' + title_parts[len(title_parts) - 1]) if title_parts[len(title_parts) - 1] else '' )
 				url_parts = episode['href'].split('/')
-				episode_data['season'] = url_parts[len(url_parts) - 3].split('-')[1]
-				episode_data['episode'] = url_parts[len(url_parts) - 2].split('-')[1]
-				episode_data['url'] = url_for('get_episode', show = show, season = url_parts[len(url_parts) - 3], episode = url_parts[len(url_parts) - 2])
+				episode_data['season'] = url_parts[len(url_parts) - 3]
+				episode_data['episode'] = url_parts[len(url_parts) - 2]
 				episodes.append(episode_data)
 			seasons[title] = episodes
 		show = {}
