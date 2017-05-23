@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+from util.decorators import crossdomain
 from flask import Flask, url_for
 import json
 import lxml
@@ -21,6 +22,7 @@ def hello_world():
 	return 'Hello, World!'
 
 @app.route('/show/')
+@crossdomain(origin = '*')
 def get_shows():
 	request = urllib.request.Request(SHOWS_BASE, None, headers)
 	with urllib.request.urlopen(request) as response:
@@ -39,6 +41,7 @@ def get_shows():
 	return json.dumps(groups)
 
 @app.route('/show/<show>')
+@crossdomain(origin = '*')
 def get_show(show):
 	request = urllib.request.Request(SHOW_BASE + show + '/', None, headers)
 	with urllib.request.urlopen(request) as response:
@@ -65,5 +68,6 @@ def get_show(show):
 	return json.dumps(show)
 
 @app.route('/show/<show>/<season>/<episode>')
+@crossdomain(origin = '*')
 def get_episode(show, season, episode):
 	return show + ' - ' + season + ' - ' + episode
